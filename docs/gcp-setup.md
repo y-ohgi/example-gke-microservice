@@ -88,7 +88,13 @@ kubectl get ingress -n ec-app
 
 ## 9. 後片付け(課金停止)
 
-検証後、課金を止めるにはクラスタを削除する。
+クラスタを削除する前に、必ずIngressを削除する。GKEのIngress Controllerは、Ingressオブジェクトの削除をきっかけに外部ロードバランサ(転送ルール・バックエンドサービス・ヘルスチェック・ファイアウォールルールなど)を後片付けする。先にクラスタを削除するとこの後片付けが走らず、ロードバランサのリソースが残って課金が続く。
+
+```
+kubectl delete -f k8s/ingress/ingress.yaml
+```
+
+Ingressに紐づくリソースが消えたことを確認してから、クラスタを削除する。
 
 ```
 gcloud container clusters delete example-gke-microservice --region=asia-northeast1
