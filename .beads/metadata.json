@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "example_gke_microservice",
+  "project_id": "1623ac71-2811-40bf-91c1-f2fade02634f"
+}
