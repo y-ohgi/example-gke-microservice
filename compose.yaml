@@ -3,6 +3,12 @@ services:
     build: ./apps/catalog-service
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/products"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
 
   order-service:
     build: ./apps/order-service
@@ -11,7 +17,14 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - catalog-service
+      catalog-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8081/orders"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
 
   bff:
     build: ./apps/bff
@@ -21,13 +34,32 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - catalog-service
-      - order-service
+      catalog-service:
+        condition: service_healthy
+      order-service:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000/api/products', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
   frontend:
     build: ./apps/frontend
     ports:
       - "8082:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   # SPEC.mdのIngress相当のパスルーティングをローカルで再現する入口。
   # ブラウザからは http://localhost:8000 でアクセスする。
@@ -38,5 +70,7 @@ services:
     ports:
       - "8000:80"
     depends_on:
-      - frontend
-      - bff
+      frontend:
+        condition: service_healthy
+      bff:
+        condition: service_healthy
