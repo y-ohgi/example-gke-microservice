@@ -53,8 +53,6 @@ export default function OrderFormPage() {
     } catch (error: unknown) {
       if (error instanceof ApiError && error.status === 404) {
         setSubmitError('商品が見つかりませんでした。一覧に戻ってやり直してください。')
-      } else if (error instanceof ApiError && error.status === 400) {
-        setSubmitError('数量が不正です。1以上の整数を入力してください。')
       } else {
         setSubmitError('注文の作成に失敗しました。時間をおいて再度お試しください。')
       }
