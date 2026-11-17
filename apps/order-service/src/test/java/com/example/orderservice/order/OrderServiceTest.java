@@ -1,6 +1,7 @@
 package com.example.orderservice.order;
 
 import com.example.orderservice.catalog.CatalogClient;
+import com.example.orderservice.catalog.CatalogServiceUnavailableException;
 import com.example.orderservice.catalog.ProductView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,15 @@ class OrderServiceTest {
 
 		assertThatThrownBy(() -> orderService.createOrder(new CreateOrderRequest(999L, 1)))
 				.isInstanceOf(ProductNotFoundException.class);
+	}
+
+	@Test
+	void createOrderPropagatesCatalogServiceUnavailable() {
+		when(catalogClient.findProduct(1L))
+				.thenThrow(new CatalogServiceUnavailableException(new RuntimeException("boom")));
+
+		assertThatThrownBy(() -> orderService.createOrder(new CreateOrderRequest(1L, 1)))
+				.isInstanceOf(CatalogServiceUnavailableException.class);
 	}
 
 	@Test

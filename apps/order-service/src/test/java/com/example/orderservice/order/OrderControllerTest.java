@@ -1,5 +1,6 @@
 package com.example.orderservice.order;
 
+import com.example.orderservice.catalog.CatalogServiceUnavailableException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,18 @@ class OrderControllerTest {
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(request)))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void createReturns503WhenCatalogServiceUnavailable() throws Exception {
+		CreateOrderRequest request = new CreateOrderRequest(1L, 1);
+		when(orderService.createOrder(request))
+				.thenThrow(new CatalogServiceUnavailableException(new RuntimeException("boom")));
+
+		mockMvc.perform(post("/orders")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(request)))
+				.andExpect(status().isServiceUnavailable());
 	}
 
 	@Test
