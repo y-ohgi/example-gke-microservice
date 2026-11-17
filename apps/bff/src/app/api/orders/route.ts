@@ -1,16 +1,14 @@
-import { orderServiceUrl, forwardResponse } from "@/lib/backend";
+import { orderServiceUrl, proxyFetch } from "@/lib/backend";
 
 export async function GET() {
-  const res = await fetch(`${orderServiceUrl}/orders`, { cache: "no-store" });
-  return forwardResponse(res);
+  return proxyFetch(`${orderServiceUrl}/orders`, { cache: "no-store" });
 }
 
 export async function POST(request: Request) {
   const body = await request.text();
-  const res = await fetch(`${orderServiceUrl}/orders`, {
+  return proxyFetch(`${orderServiceUrl}/orders`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body,
   });
-  return forwardResponse(res);
 }

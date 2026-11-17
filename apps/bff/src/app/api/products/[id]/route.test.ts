@@ -30,4 +30,30 @@ describe("GET /api/products/[id]", () => {
 
     expect(res.status).toBe(404);
   });
+
+  test("URLエンコードが必要なidはエンコードしてcatalog-serviceへ渡す", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(null, { status: 404 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await GET(new Request("http://localhost/api/products/foo%20bar"), {
+      params: Promise.resolve({ id: "foo bar" }),
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining("/products/foo%20bar"),
+      expect.anything(),
+    );
+  });
+
+  test("catalog-serviceに到達できない場合は502を返す", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network error")));
+
+    const res = await GET(new Request("http://localhost/api/products/1"), {
+      params: Promise.resolve({ id: "1" }),
+    });
+
+    expect(res.status).toBe(502);
+  });
 });
