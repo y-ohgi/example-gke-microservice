@@ -4,3 +4,9 @@ server:
 spring:
   application:
     name: catalog-service
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true

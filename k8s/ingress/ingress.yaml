@@ -1,0 +1,25 @@
+# GKEの既定Ingress Controller(IngressClass: gce)を前提とし、
+# ingressClassNameは明示的に指定しない。
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ec-app-ingress
+  namespace: ec-app
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: bff
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
