@@ -1,0 +1,93 @@
+:root {
+  --text: #1f2328;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #d9d9df;
+  --accent: #7c3aed;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  font: 16px/1.5 var(--sans);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #e5e7eb;
+    --text-h: #f3f4f6;
+    --bg: #16171d;
+    --border: #3a3b45;
+    --accent: #c084fc;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+h1,
+h2 {
+  color: var(--text-h);
+}
+
+nav ul {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+nav a {
+  color: var(--accent);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 8px;
+  text-align: left;
+}
+
+ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+li {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+input {
+  font: inherit;
+  padding: 4px 8px;
+}
+
+button {
+  font: inherit;
+  padding: 8px 16px;
+}
